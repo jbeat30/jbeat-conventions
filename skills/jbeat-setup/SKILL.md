@@ -5,8 +5,7 @@ classification-reason: "One-time initial setup command for the jbeat-conventions
 deprecation-risk: none
 description: |
   Run once after installing jbeat-conventions to configure Claude Code automatically.
-  Checks ~/.claude/settings.json for required entries and adds any that are missing.
-  Reports SUCCESS (newly configured) or ALREADY SET (no changes needed).
+  Creates ~/.claude/settings.json if absent, adds missing entries if needed, keeps existing entries untouched.
   Triggers: jbeat setup, jbeat init, jbeat install, 초기 설정, 세팅, setup
 argument-hint: "(no argument needed)"
 user-invocable: true
@@ -17,89 +16,101 @@ allowed-tools:
   - Bash
 ---
 
-# Jbeat Conventions — Initial Setup
+# Jbeat Conventions — Setup
 
-Run this skill once after installing the jbeat-conventions plugin.
-It will configure `~/.claude/settings.json` so that Claude Code loads the plugin automatically.
+Configures `~/.claude/settings.json` for the jbeat-conventions plugin.
 
 ---
 
-## Step 1 — Resolve the settings file path
+## Step 1 — Resolve path
 
-Use Bash to resolve the actual path:
-
-```
+```bash
 echo "$HOME/.claude/settings.json"
 ```
 
 ---
 
-## Step 2 — Read the current settings
+## Step 2 — Read settings.json
 
-Read `~/.claude/settings.json`.
+Try to read `~/.claude/settings.json`.
 
-If the file does not exist, treat its contents as `{}` and proceed to Step 4.
+- File does not exist → go to Step 3A
+- File exists → go to Step 3B
 
 ---
 
-## Step 3 — Check what is already configured
+## Step 3A — File does not exist: create it
 
-Check for both of the following entries:
+Write `~/.claude/settings.json` with the following content:
 
-**A. enabledPlugins entry**
 ```json
-"enabledPlugins": {
-  "jbeat-conventions@jbeat-plugins": true
-}
-```
-
-**B. extraKnownMarketplaces entry**
-```json
-"extraKnownMarketplaces": {
-  "jbeat-plugins": {
-    "source": {
-      "source": "github",
-      "repo": "jbeat30/jbeat-conventions"
+{
+  "enabledPlugins": {
+    "jbeat-conventions@jbeat-plugins": true
+  },
+  "extraKnownMarketplaces": {
+    "jbeat-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "jbeat30/jbeat-conventions"
+      }
     }
   }
 }
 ```
 
-If both entries are already present → skip to Step 5 (report already configured).
+Then go to Step 4 (newly configured).
 
 ---
 
-## Step 4 — Add missing entries
+## Step 3B — File exists: check entries
 
-For each missing entry, add it to the JSON object using Edit (if the file exists) or Write (if the file was absent).
+Check for both of the following:
 
-Preserve all existing keys and values. Only add what is missing.
+**A.** `enabledPlugins` contains `"jbeat-conventions@jbeat-plugins": true`
+
+**B.** `extraKnownMarketplaces` contains `"jbeat-plugins"` with:
+```json
+{
+  "source": {
+    "source": "github",
+    "repo": "jbeat30/jbeat-conventions"
+  }
+}
+```
+
+- Both present → go to Step 5 (already configured)
+- One or both missing → add only the missing entries using Edit, preserve all existing keys → go to Step 4
 
 ---
 
-## Step 5 — Report result in Korean
+## Step 4 — Report: newly configured
 
-### If newly configured (one or more entries were added):
+Run this Bash command first:
+```bash
+printf '\033[32mSUCCESS!\033[0m\n'
+```
+
+Then output:
 
 ```
-✅ jbeat-conventions 설정 완료
-
-추가된 항목:
-- enabledPlugins에 "jbeat-conventions@jbeat-plugins" 추가
-- extraKnownMarketplaces에 "jbeat-plugins" 등록
+jbeat-conventions 설정이 완료되었습니다.
 
 사용 가능한 명령어:
-  /jbeat-conventions  — 현재 작업에 컨벤션 적용
-  /jbeat-apply        — 모든 컨벤션 파일 수동 로드
+  /jbeat-conventions  — 컨벤션 적용
+  /jbeat-apply        — 모든 컨벤션 파일 로드
 ```
 
-### If already configured (no changes were needed):
+---
+
+## Step 5 — Report: already configured
+
+Output:
 
 ```
-✅ 이미 설정되어 있습니다
+이미 설정되어 있습니다. 바로 사용하셔도 됩니다.
 
-- enabledPlugins: jbeat-conventions@jbeat-plugins ✓
-- extraKnownMarketplaces: jbeat-plugins ✓
-
-별도 작업이 필요하지 않습니다.
+사용 가능한 명령어:
+  /jbeat-conventions  — 컨벤션 적용
+  /jbeat-apply        — 모든 컨벤션 파일 로드
 ```

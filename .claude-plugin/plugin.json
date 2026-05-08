@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Jbeat Conventions",
     "shortDescription": "Jbeat engineering conventions for implementation and review",
-    "longDescription": "Applies Jbeat engineering conventions across repositories, focusing on scope control, regression safety, naming rules, comment style, and honest validation reporting. Run /jbeat-setup once to configure Claude Code automatically. Use /jbeat-apply to manually load all conventions into context. Conventions are organized into separate reference files: core rules, naming, comment style, language policy, quality checklist, and reporting format.",
+    "longDescription": "Applies Jbeat engineering conventions across repositories, focusing on scope control, regression safety, naming rules, comment style, and honest validation reporting. Run /jbeat-conventions to apply conventions and configure Claude Code automatically. Use /jbeat-apply to manually load all convention reference files. Conventions are organized into separate reference files: core rules, naming, comment style, language policy, quality checklist, and reporting format.",
     "developerName": "jbeat",
     "category": "Productivity",
     "capabilities": [

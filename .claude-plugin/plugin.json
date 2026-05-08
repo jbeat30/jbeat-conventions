@@ -1,6 +1,6 @@
 {
   "name": "jbeat-conventions",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Shared Jbeat engineering conventions packaged as a Claude plugin skill.",
   "author": {
     "name": "jbeat",

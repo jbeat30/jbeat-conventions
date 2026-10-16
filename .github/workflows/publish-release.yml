@@ -37,7 +37,7 @@ jobs:
           [[ "$branch" != *$'\n'* ]]
           echo "tag=${branch#*/}" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         if: steps.source.outputs.tag != ''
         with:
           ref: ${{ github.sha }}

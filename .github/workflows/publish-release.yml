@@ -1,0 +1,72 @@
+# release/vX.Y.Z (또는 hotfix/vX.Y.Z) PR 이 main 에 머지되면 vX.Y.Z 태그와 GitHub 릴리즈를 생성한다.
+name: publish-release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: publish-release-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_SHA: ${{ github.sha }}
+    steps:
+      - name: main 에 머지된 release/hotfix PR 확인
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch=$(gh api "repos/${GH_REPO}/commits/${RELEASE_SHA}/pulls" --jq \
+            '.[] | select(.merged_at != null and .base.ref == "main") | select(.merge_commit_sha == env.RELEASE_SHA) | .head.ref' \
+            | grep -E '^(release|hotfix)/v[0-9]+\.[0-9]+\.[0-9]+$' || true)
+          if [[ -z "$branch" ]]; then
+            echo '릴리즈 PR 머지가 아니므로 생성하지 않습니다.'
+            exit 0
+          fi
+          [[ "$branch" != *$'\n'* ]]
+          echo "tag=${branch#*/}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        if: steps.source.outputs.tag != ''
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: plugin.json 버전 검사
+        if: steps.source.outputs.tag != ''
+        env:
+          RELEASE_TAG: ${{ steps.source.outputs.tag }}
+        run: |
+          set -euo pipefail
+          plugin_version=$(jq -r .version .claude-plugin/plugin.json)
+          [[ "v${plugin_version}" == "$RELEASE_TAG" ]] || { echo "plugin.json(${plugin_version}) 과 ${RELEASE_TAG} 불일치"; exit 1; }
+
+      - name: 태그와 릴리즈 생성
+        if: steps.source.outputs.tag != ''
+        env:
+          RELEASE_TAG: ${{ steps.source.outputs.tag }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # 기존 태그는 이동하지 않습니다. 커밋 불일치는 실패로 처리합니다.
+          if gh api "repos/${GH_REPO}/git/ref/tags/${RELEASE_TAG}" >/dev/null 2>&1; then
+            tag_sha=$(gh api "repos/${GH_REPO}/commits/${RELEASE_TAG}" --jq .sha)
+            [[ "$tag_sha" == "$RELEASE_SHA" ]] || { echo '태그 커밋 불일치'; exit 1; }
+          fi
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo '이미 생성된 릴리즈입니다.'
+            exit 0
+          fi
+          gh release create "$RELEASE_TAG" --target "$RELEASE_SHA" \
+            --title "$RELEASE_TAG" --generate-notes --latest

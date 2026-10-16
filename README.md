@@ -56,3 +56,9 @@ claude mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest
 
 - context7은 외부 서비스이므로 쿼리에 시크릿이나 내부 코드를 넣지 않습니다.
 - chrome-devtools는 localhost, 개발·스테이징 환경에서만 사용하며 개인 로그인 프로필은 사용하지 않습니다.
+
+## 버전·브랜치 관리
+
+- 버전은 [Semantic Versioning](https://semver.org/lang/ko/)을 따르며 태그는 `vX.Y.Z` 입니다. 릴리즈는 [Releases](https://github.com/jbeat30/jbeat-conventions/releases)에서 확인합니다.
+- `main` 에는 `release/vX.Y.Z`, `hotfix/vX.Y.Z` 만 PR 할 수 있고, 작업은 `feature/vX.Y.Z` 로 PR 합니다.
+- 상세 흐름(작업·릴리즈·핫픽스·백머지)은 [.github/BRANCH_STRATEGY.md](.github/BRANCH_STRATEGY.md)를 참고하세요.

@@ -9,6 +9,7 @@
 - Review whether execution order, initialization order, dependency order, rendering order, or event flow must be preserved.
 - Review possible type, lint, build, runtime, and side-effect impact.
 - Distinguish what can be validated now from what cannot.
+- If third-party API usage is uncertain, verify it per `tooling-verification.md` before implementing.
 
 ## During Work
 

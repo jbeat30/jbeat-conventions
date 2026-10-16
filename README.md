@@ -42,3 +42,17 @@ claude plugins update jbeat-conventions@jbeat-plugins
 | `references/language-conventions.md` | 언어 정책 (기본 한국어) |
 | `references/quality-checklist.md` | 작업 전 확인 사항과 최종 자가 점검 |
 | `references/reporting-format.md` | 결과 보고서 및 검증 요약 형식 |
+| `references/tooling-verification.md` | context7(최신 문서), chrome-devtools(화면 검증) 사용 규칙 |
+
+## 선택 사항: MCP 도구
+
+`tooling-verification.md`는 아래 MCP가 설치된 경우에만 적용되며, 이 플러그인은 MCP를 설치하거나 설정하지 않습니다.
+도구가 없으면 공식 문서 등으로 대체하고, 확인하지 못한 항목은 미검증으로 보고합니다.
+
+```bash
+claude mcp add context7 -- npx -y @upstash/context7-mcp
+claude mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest
+```
+
+- context7은 외부 서비스이므로 쿼리에 시크릿이나 내부 코드를 넣지 않습니다.
+- chrome-devtools는 localhost, 개발·스테이징 환경에서만 사용하며 개인 로그인 프로필은 사용하지 않습니다.

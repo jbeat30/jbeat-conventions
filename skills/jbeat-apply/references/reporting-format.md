@@ -34,6 +34,7 @@ Use Korean by default unless the user explicitly requests another language.
 - Do not claim that type checking, linting, testing, building, or runtime verification was performed unless it actually was.
 - If validation was not possible, state the reason explicitly.
 - Distinguish facts from assumptions.
+- List tool-based verification (context7, chrome-devtools) with its source: library and version, or URL and viewport.
 - Do not exaggerate validation results.
 - State remaining risks clearly without minimizing them.
 

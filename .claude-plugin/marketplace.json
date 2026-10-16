@@ -1,5 +1,6 @@
 {
   "name": "jbeat-plugins",
+  "description": "Jbeat engineering conventions plugins for Claude Code.",
   "owner": {
     "name": "jbeat"
   },

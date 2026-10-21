@@ -1,6 +1,6 @@
 {
   "name": "jbeat-plugins",
-  "description": "Jbeat engineering conventions plugins for Claude Code.",
+  "description": "Jbeat plugins for Claude Code.",
   "owner": {
     "name": "jbeat"
   },
@@ -12,6 +12,15 @@
         "url": "https://github.com/jbeat30/jbeat-conventions.git"
       },
       "description": "Shared Jbeat engineering conventions packaged as a Claude plugin skill.",
+      "category": "Productivity"
+    },
+    {
+      "name": "claude-team-base",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/jbeat30/claude-team-base.git"
+      },
+      "description": "Claude Code agent team base (Lite/Full) that respects existing project policies, installed through a skill.",
       "category": "Productivity"
     }
   ]

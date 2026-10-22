@@ -15,10 +15,10 @@
       "category": "Productivity"
     },
     {
-      "name": "claude-team-base",
+      "name": "agent-team-base",
       "source": {
         "source": "url",
-        "url": "https://github.com/jbeat30/claude-team-base.git"
+        "url": "https://github.com/jbeat30/agent-team-base.git"
       },
       "description": "Claude Code agent team base (Lite/Full) that respects existing project policies, installed through a skill.",
       "category": "Productivity"

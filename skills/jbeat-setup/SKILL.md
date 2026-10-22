@@ -80,7 +80,7 @@ Write to TARGET_PATH:
     "jbeat-plugins": {
       "source": {
         "source": "github",
-        "repo": "jbeat30/jbeat-conventions"
+        "repo": "jbeat30/jbeat-plugins"
       }
     }
   }
@@ -103,10 +103,12 @@ Then go to Step 5A (enabled).
 "jbeat-plugins": {
   "source": {
     "source": "github",
-    "repo": "jbeat30/jbeat-conventions"
+    "repo": "jbeat30/jbeat-plugins"
   }
 }
 ```
+
+If `extraKnownMarketplaces["jbeat-plugins"].source.repo` is `jbeat30/jbeat-conventions` (legacy location), replace it with `jbeat30/jbeat-plugins`.
 
 Preserve all existing keys.
 

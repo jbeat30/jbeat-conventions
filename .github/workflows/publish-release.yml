@@ -70,3 +70,39 @@ jobs:
           fi
           gh release create "$RELEASE_TAG" --target "$RELEASE_SHA" \
             --title "$RELEASE_TAG" --generate-notes --latest
+
+      - name: 마켓플레이스 ref 갱신 PR 생성
+        if: steps.source.outputs.tag != ''
+        env:
+          RELEASE_TAG: ${{ steps.source.outputs.tag }}
+          MARKETPLACE_TOKEN: ${{ secrets.MARKETPLACE_TOKEN }}
+          PLUGIN_NAME: jbeat-conventions
+          MARKETPLACE_REPO: jbeat30/jbeat-plugins
+        shell: bash
+        run: |
+          set -euo pipefail
+          # 마켓플레이스 저장소 쓰기 토큰이 없으면 생략, 수동 갱신 필요
+          if [[ -z "$MARKETPLACE_TOKEN" ]]; then
+            echo "::warning::MARKETPLACE_TOKEN 시크릿 없음, ${MARKETPLACE_REPO}의 ${PLUGIN_NAME} ref를 ${RELEASE_TAG}로 직접 갱신 필요"
+            exit 0
+          fi
+          export GH_TOKEN="$MARKETPLACE_TOKEN"
+          git clone --depth 1 "https://x-access-token:${MARKETPLACE_TOKEN}@github.com/${MARKETPLACE_REPO}.git" marketplace
+          cd marketplace
+          file=.claude-plugin/marketplace.json
+          jq --arg n "$PLUGIN_NAME" --arg t "$RELEASE_TAG" \
+            '(.plugins[] | select(.name == $n) | .source.ref) = $t' "$file" > "$file.tmp"
+          mv "$file.tmp" "$file"
+          if git diff --quiet; then
+            echo 'ref 변경 없음'
+            exit 0
+          fi
+          branch="chore/${PLUGIN_NAME}-${RELEASE_TAG}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -c "$branch"
+          git commit -am "chore: ${PLUGIN_NAME} ${RELEASE_TAG} 반영"
+          git push origin "$branch"
+          gh pr create --repo "$MARKETPLACE_REPO" --base main --head "$branch" \
+            --title "chore: ${PLUGIN_NAME} ${RELEASE_TAG} 반영" \
+            --body "${PLUGIN_NAME} 릴리즈 ${RELEASE_TAG} 생성에 따른 마켓플레이스 ref 갱신"

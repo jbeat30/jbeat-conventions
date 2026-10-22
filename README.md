@@ -13,10 +13,18 @@ Jbeat 엔지니어링 컨벤션을 Claude Code 플러그인으로 패키징한 �
 
 ## 설치
 
-```bash
-claude plugins install jbeat-conventions@jbeat-plugins
-# 마켓플레이스 등록과 설치를 한 번에 (Claude Code 2.1.275 이상)
-/plugin install jbeat-conventions --marketplace jbeat30/jbeat-conventions
+```
+/plugin marketplace add jbeat30/jbeat-plugins
+/plugin install jbeat-conventions@jbeat-plugins
+```
+
+마켓플레이스 `jbeat-plugins`는 [jbeat30/jbeat-plugins](https://github.com/jbeat30/jbeat-plugins)에서 관리
+
+기존에 `jbeat30/jbeat-conventions`로 등록한 환경은 재등록 필요
+
+```
+/plugin marketplace remove jbeat-plugins
+/plugin marketplace add jbeat30/jbeat-plugins
 ```
 
 ## 업데이트

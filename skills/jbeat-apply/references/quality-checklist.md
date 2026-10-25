@@ -56,6 +56,8 @@
 - Do not disable type checks, lint rules, tests, or build checks merely to make a change look successful.
 - Do not change order-sensitive code unless the reason and expected impact are clear.
 - Do not add dead-code guards for scenarios confirmed impossible through data flow analysis.
+- Do not merge, release, tag, push, or change permissions and settings beyond what the user instructed. Confirm the scope first when the instruction is ambiguous.
+- Do not extend approval given for one action (install, remote change, permission change) to another action.
 
 ## Final Self-Check
 

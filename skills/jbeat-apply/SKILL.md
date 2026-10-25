@@ -6,7 +6,7 @@ deprecation-risk: none
 description: |
   Manually load and activate all Jbeat engineering conventions.
   Use when you want to explicitly ensure all convention rules are loaded before starting work.
-  Reads all reference files: core rules, naming, comment style, language policy, quality checklist, reporting format, and tooling verification.
+  Reads all reference files: core rules, naming, comment style, language policy, quality checklist, reporting format, and tooling verification, and commit and PR conventions.
   Triggers: jbeat apply, apply conventions, load conventions, 컨벤션 적용, 규칙 적용
 argument-hint: "(no argument needed)"
 user-invocable: true
@@ -34,6 +34,7 @@ Explicitly load all Jbeat engineering convention files into the active context.
    - `quality-checklist.md`
    - `reporting-format.md`
    - `tooling-verification.md`
+   - `commit-conventions.md`
 3. After reading all files, report to the user in Korean.
 
 ## After Loading
@@ -47,5 +48,6 @@ Confirm to the user in Korean which convention sets are now active:
 - 품질 체크리스트 (사전 확인, 안정성 기준, 금지 행동)
 - 보고 형식 (결과 보고서 형식, 검증 보고 규칙)
 - 도구 기반 검증 (context7 최신 문서 확인, chrome-devtools 화면 검증)
+- 커밋·PR 컨벤션 (제목 형식, 문자 규칙, 본문 구성, AI 첨부 문구 금지)
 
 이제 이 세션의 모든 작업에 위 규칙이 적용됩니다.

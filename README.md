@@ -53,6 +53,7 @@ claude plugins update jbeat-conventions@jbeat-plugins
 | `references/quality-checklist.md` | 작업 전 확인 사항과 최종 자가 점검 |
 | `references/reporting-format.md` | 결과 보고서 및 검증 요약 형식 |
 | `references/tooling-verification.md` | context7(최신 문서), chrome-devtools(화면 검증) 사용 규칙 |
+| `references/commit-conventions.md` | 커밋·PR 제목 형식, 문자 규칙, 본문 구성, AI 첨부 문구 금지 |
 
 ## 선택 사항: MCP 도구
 

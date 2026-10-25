@@ -11,6 +11,7 @@
 - User explicitly requests a different language for this session or task.
 - Project local rules specify a different language.
 - External system documentation or contracts use a specific language that must be preserved.
+- An English README and English usage examples are allowed alongside the Korean documents.
 
 ## Scope
 

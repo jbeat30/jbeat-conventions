@@ -6,7 +6,7 @@ deprecation-risk: none
 description: |
   Manually load and activate all Jbeat engineering conventions.
   Use when you want to explicitly ensure all convention rules are loaded before starting work.
-  Reads all reference files: core rules, naming, comment style, language policy, quality checklist, reporting format, and tooling verification, and commit and PR conventions.
+  Reads all reference files: core rules, naming, comment style, language policy, quality checklist, reporting format, tooling verification, and commit and PR conventions.
   Triggers: jbeat apply, apply conventions, load conventions, 컨벤션 적용, 규칙 적용
 argument-hint: "(no argument needed)"
 user-invocable: true

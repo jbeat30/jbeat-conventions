@@ -1,34 +1,31 @@
 # Commit and PR Conventions
 
-Use Korean by default. Applies to commit messages, PR titles, and PR bodies.
+Apply when writing commit or PR text. Follow
+[language-conventions.md](language-conventions.md) for language and
+[writing-conventions.md](writing-conventions.md) for punctuation. Resolve actual
+conflicts with contribution rules or templates through
+[project-rule-resolution.md](project-rule-resolution.md).
 
-## Title
+## Titles
 
-- Format: `type: Korean noun-ending description`, for example `feat: 로그인 화면 추가`.
-- Types: `feat`, `fix`, `refactor`, `perf`, `style`, `docs`, `test`, `chore`, `ci`, `build`, `revert`, `release`.
-- End with a noun form (`추가`, `수정`, `정리`, `제거`). Avoid sentence endings such as `~합니다`, `~했습니다`.
-- Do not end the title with a period.
-- Describe the purpose and result of the change, not the files touched.
+- Default format: `type: description`, optionally with a meaningful scope such as
+  `fix(parser): handle empty input`.
+- Types: `feat`, `fix`, `refactor`, `perf`, `style`, `docs`, `test`, `chore`, `ci`,
+  `build`, `revert`, `release`.
+- Describe purpose and result. Korean descriptions use concise noun endings such
+  as `추가`, `수정`, `정리`, `제거`. Other languages use natural conventions.
+- Omit a final period in titles. Do not impose Korean on other-language work.
 
-## Characters
+## Bodies and units
 
-- Do not use the middle dot (`·`) or dashes (`-`, `–`, `—`) as separators in titles or body text.
-- Use commas, `와/과`, or a numbered list instead.
-- Hyphens inside identifiers, paths, branch names, and command flags are kept as written.
+- Explain the problem, resulting behavior, and relevant verification. Use the
+  repository template when compatible; otherwise a useful default is overview,
+  changes, verification, and notes, in the artifact's language.
+- Keep sections short and omit empty optional sections. Evidence reporting follows
+  [reporting-format.md](reporting-format.md).
+- Group commits by meaningful changes. Separate unrelated formatting from behavior;
+  do not split inseparable documentation from its behavior mechanically.
+- Do not add AI-generated signatures such as `Generated with` phrases or AI
+  `Co-Authored-By` trailers. Resolve conflicts if repository rules require attribution.
 
-## Body
-
-- PR body order: 개요, 변경 사항, 검증, 참고.
-- Keep each part short. Use a numbered list for multiple items.
-- Verification states what was actually run and its result. Write items that were not run as unverified.
-
-## AI Attribution
-
-- Do not add AI generated phrases or signatures to commits and PRs, such as `Generated with ...` or a `Co-Authored-By` trailer naming an AI tool.
-- This applies to every commit type, including `chore` and `docs`.
-- A repository may allow an exception in its own contribution guide. That exception is the repository's policy, not part of these conventions.
-
-## Commit Units
-
-- One commit per meaningful unit of change. Do not squash unrelated changes into one commit.
-- Do not mix formatting-only changes with behavior changes.
+Writing a message does not authorize creating a commit, publishing a PR, or pushing.

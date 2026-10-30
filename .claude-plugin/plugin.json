@@ -1,7 +1,7 @@
 {
   "name": "jbeat-conventions",
-  "version": "1.2.0",
-  "description": "Shared Jbeat engineering conventions packaged as a Claude plugin skill.",
+  "version": "2.0.0",
+  "description": "Cross-language engineering conventions for scoped changes, project-rule conflict choices, clear writing, and honest verification.",
   "author": {
     "name": "jbeat",
     "url": "https://github.com/jbeat30"
@@ -18,8 +18,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Jbeat Conventions",
-    "shortDescription": "Jbeat engineering conventions for implementation and review",
-    "longDescription": "Applies Jbeat engineering conventions across repositories, focusing on scope control, regression safety, naming rules, comment style, and honest validation reporting. Run /jbeat-setup to toggle auto mode and /jbeat-apply to manually load all convention reference files. Conventions are organized into separate reference files: core rules, naming, comment style, language policy, quality checklist, reporting format, and tooling verification (context7, chrome-devtools).",
+    "shortDescription": "Scoped changes, project-rule choices, and honest verification",
+    "longDescription": "Prompt-based engineering conventions across languages. Run jbeat-setup once per project to connect the installed apply skill through existing CLAUDE.md or AGENTS.md instructions, then make normal work requests. The apply skill routes relevant references, asks users to resolve actual local-rule conflicts, and reviews changed artifacts before completion. No bundled runtime scripts, hooks, or Node.js dependency. MCP tools are optional.",
     "developerName": "jbeat",
     "category": "Productivity",
     "capabilities": [

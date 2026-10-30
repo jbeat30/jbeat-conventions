@@ -1,74 +1,39 @@
 # Quality Checklist
 
-## Before Starting Work
+Use relevant questions for implementation, debugging, refactoring, and code review.
+Plans and document-only work do not require code checks unless their outcome depends
+on them. This operationalizes [core-rules.md](core-rules.md), without universal steps.
 
-- Identify the requested scope.
-- Identify which existing behavior must be preserved.
-- Define the minimal necessary change.
-- Check for conflicts with existing code patterns and local repository rules.
-- Review whether execution order, initialization order, dependency order, rendering order, or event flow must be preserved.
-- Review possible type, lint, build, runtime, and side-effect impact.
-- Distinguish what can be validated now from what cannot.
-- If third-party API usage is uncertain, verify it per `tooling-verification.md` before implementing.
+## Before changing code
 
-## During Work
+- What outcome is requested, and what surrounding behavior must remain stable?
+- Which local rules apply? Are actual conflicts unresolved under
+  [project-rule-resolution.md](project-rule-resolution.md)?
+- Which normal/failure paths, callers, trust boundaries, or order-sensitive behavior
+  could the change affect?
+- Does uncertain third-party usage need
+  [tooling-verification.md](tooling-verification.md)?
+- Which existing checks can establish the intended result?
 
-- Keep changes small, traceable, and within scope.
-- Preserve file structure unless there is a clear reason to change it.
-- Preserve existing naming and utility usage unless directly related to the requested change.
-- Do not introduce abstractions without confirmed need.
-- Do not remove existing guards, validations, fallback logic, or error handling without clear justification.
-- Keep side effects visible and intentional.
-- Maintain type safety without hiding problems through `any`, weak assertions, or optional-chaining abuse.
-- Maintain lint and build stability without weakening the original structure.
-- Preserve meaningful execution order unless change is explicitly required.
+## Review the change
 
-## Quality and Stability Criteria
+- Is each changed area necessary to complete the task?
+- Are guards, failure handling, types, and meaningful ordering preserved or changed
+  intentionally with a clear reason?
+- If logic was shared or removed, do callers actually have the same contract?
+- Do changed user messages describe the actual failure without internal diagnostics?
+  Do changed comments explain useful intent?
+- Does the change respect supported languages and tools without imposing frontend rules?
 
-- Type errors must not be introduced.
-- Lint errors must not be introduced.
-- Build errors must not be introduced.
-- Runtime errors must not be introduced.
-- Unintended side effects must not be introduced.
-- Existing public behavior must be preserved unless the request explicitly changes it.
-- Existing call contracts must be preserved unless the request explicitly changes them.
-- Existing data flow must be preserved unless the request explicitly changes it.
-- Existing user experience must be preserved unless the request explicitly changes it.
-- Normal and failure paths must not change unintentionally.
+## Verify proportionally
 
-## Validation Rules
-
-- Execute static checks, tests, builds, or runtime verification when feasible.
-- Report only validations that were actually executed.
-- Separate executed validations from unexecuted validations.
-- Mark unvalidated items clearly and explain why they were not validated.
-- Distinguish assumptions from verified facts.
-- Prioritize regression-prone paths when validation range is limited.
-
-## Prohibited Actions
-
-- Do not perform large-scale refactoring outside the requested scope.
-- Do not implement based on unverified assumptions presented as fact.
-- Do not hide errors with temporary workarounds.
-- Do not force personal preferences over repository rules.
-- Do not change public behavior, contracts, data flow, or user experience without explicit request.
-- Do not move files, reorganize modules, or replace libraries without clear justification.
-- Do not disable type checks, lint rules, tests, or build checks merely to make a change look successful.
-- Do not change order-sensitive code unless the reason and expected impact are clear.
-- Do not add dead-code guards for scenarios confirmed impossible through data flow analysis.
-- Do not merge, release, tag, push, or change permissions and settings beyond what the user instructed. Confirm the scope first when the instruction is ambiguous.
-- Do not extend approval given for one action (install, remote change, permission change) to another action.
-
-## Final Self-Check
-
-- Confirm existing intent was preserved.
-- Confirm change scope stayed minimal.
-- Confirm side effects were reviewed.
-- Confirm type, lint, build, and runtime risks were reviewed.
-- Confirm execution order, initialization order, dependency order, rendering order, and event flow were preserved unless intentionally changed.
-- Confirm public behavior, call contracts, data flow, and user experience were preserved unless intentionally changed.
-- Confirm executed and unexecuted validations were reported separately.
-- Confirm traceability and maintainability improved or at least did not regress.
-- Confirm dead code introduced or exposed by this change has been removed.
-- Confirm error messages accurately reflect the actual failure scenario (user-facing vs developer-facing separated).
-- Confirm classification logic is consolidated into a single authoritative function per concept.
+- Run relevant available checks: focused tests, static/type analysis, lint, build,
+  or runtime reproduction. Select by behavior and repository requirements rather
+  than a fixed list for every language.
+- For behavior fixes, exercise relevant normal and failure cases when feasible.
+  Prefer existing checks; add tests when they meaningfully protect behavior rather
+  than mirror implementation or prose.
+- Distinguish pre-existing failures from new failures using evidence. Do not label
+  failures pre-existing without a basis.
+- Stop expanding successful verification unless edits, failures, or remaining risk
+  justify it. Report evidence through [reporting-format.md](reporting-format.md).

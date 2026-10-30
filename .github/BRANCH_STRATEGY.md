@@ -1,6 +1,8 @@
 # 브랜치 전략 & 릴리즈 가이드
 
-jbeat-conventions 개인 레포의 브랜치 전략, PR 규칙, 버전·릴리즈 관리 방법입니다.
+[한국어](BRANCH_STRATEGY.md) | [English](BRANCH_STRATEGY.en.md)
+
+jbeat-conventions 개인 레포의 브랜치 전략, PR 규칙, 버전과 릴리즈 관리 방법입니다.
 
 ## 1. 한눈에 보기
 
@@ -24,9 +26,9 @@ main ◀── release/v1.3.0 ◀── feature/v1.3.0 ◀── feat/login-page
 | `hotfix/vX.Y.Z` | `hotfix/v1.2.1` | 긴급 수정 | `main` |
 
 - 버전은 항상 `v` + 숫자 3자리(`v1.3.0`) 형식이며 [Semantic Versioning](https://semver.org/lang/ko/)을 따릅니다.
-  - MAJOR: 기존 사용 방식을 깨는 변경 (예: 컨벤션 파일 구조·스킬 이름 변경)
-  - MINOR: 하위 호환되는 규칙·스킬 추가
-  - PATCH: 오타·문구 수정, 하위 호환 버그 수정
+  - MAJOR: 기존 사용 방식을 깨는 변경 (예: 컨벤션 파일 구조와 스킬 이름 변경)
+  - MINOR: 하위 호환되는 규칙과 스킬 추가
+  - PATCH: 오타와 문구 수정, 하위 호환 버그 수정
 - 배포 태그도 `v1.3.0` 입니다.
 
 ## 3. PR 규칙
@@ -41,8 +43,8 @@ main ◀── release/v1.3.0 ◀── feature/v1.3.0 ◀── feat/login-page
 
 - 개인 레포라 리뷰 승인은 요구하지 않습니다(승인 0명). 대신 Owner 우회 없이 모든 규칙을 똑같이 적용합니다.
 - 모든 PR은 필수 검사 `branch-policy / check` 를 통과해야 합니다.
-  - PR 방향, PR·커밋 제목 형식, AI 첨부 문구, `release`/`hotfix` → `main` 시 `plugin.json` 버전 일치를 검사합니다.
-- `main`, `release/*`, `feature/*` 는 PR로만 변경하고 force push·삭제를 금지합니다. `hotfix/*` 는 직접 push 가능하며 force push 만 금지합니다.
+  - PR 방향, PR과 커밋 제목 형식, AI 첨부 문구, `release`/`hotfix` → `main` 시 `plugin.json` 버전 일치를 검사합니다.
+- `main`, `release/*`, `feature/*` 는 PR로만 변경하고 force push와 삭제를 금지합니다. `hotfix/*` 는 직접 push 가능하며 force push 만 금지합니다.
 - 머지된 작업 브랜치는 자동 삭제됩니다.
 
 ## 4. 작업 흐름
@@ -76,7 +78,7 @@ git push -u origin feat/login-page
 3. PR: `feature/v1.3.0` → `release/v1.3.0`, **Create a merge commit**
 4. PR: `release/v1.3.0` → `main`, **Create a merge commit**
 5. `main` 머지 즉시 `publish-release` 워크플로가 `v1.3.0` 태그와 GitHub 릴리즈(자동 생성 노트)를 만듭니다.
-6. 설치한 환경에서는 `claude plugins update jbeat-conventions@jbeat-plugins` 로 업데이트합니다.
+6. 설치한 환경에서는 `claude plugin update jbeat-conventions@jbeat-plugins` 로 업데이트합니다.
 
 ### 4-4. 핫픽스
 
@@ -117,12 +119,12 @@ done
 
 | 룰 이름 | 대상 | 내용 |
 |---|---|---|
-| `main` | 기본 브랜치 | PR 필수, Merge commit 만, `branch-policy / check` 필수, force push·삭제 금지 |
-| `release` | `release/v*` | PR 필수, Merge commit 만, `branch-policy / check` 필수, force push·삭제 금지 |
-| `feature` | `feature/v*` | PR 필수, Squash·Merge 허용, `branch-policy / check` 필수, force push·삭제 금지 |
+| `main` | 기본 브랜치 | PR 필수, Merge commit 만, `branch-policy / check` 필수, force push와 삭제 금지 |
+| `release` | `release/v*` | PR 필수, Merge commit 만, `branch-policy / check` 필수, force push와 삭제 금지 |
+| `feature` | `feature/v*` | PR 필수, Squash와 Merge 허용, `branch-policy / check` 필수, force push와 삭제 금지 |
 | `hotfix` | `hotfix/v*` | force push 금지 (직접 push 는 허용) |
 
-## 7. 커밋·PR 컨벤션
+## 7. 커밋과 PR 컨벤션
 
 ```
 <타입>(<범위>): <한국어 설명>
@@ -133,4 +135,4 @@ done
 - 설명은 한국어, 명사형 종결(`추가`, `구현`, `수정`), 마침표 없음
 - PR 제목도 같은 형식입니다. 작업 → feature 는 Squash 라 PR 제목이 그대로 커밋 메시지가 됩니다.
 - PR 본문: `## 개요` / `## 변경 사항` / `## 검증` / `## 참고`
-- **AI 첨부 문구 금지**: `Co-Authored-By: Claude …`, `Generated with …` 등을 커밋·PR 에 넣지 않습니다.
+- **AI 첨부 문구 금지**: `Co-Authored-By: Claude …`, `Generated with …` 등을 커밋과 PR 에 넣지 않습니다.

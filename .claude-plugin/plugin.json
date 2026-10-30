@@ -1,6 +1,6 @@
 {
   "name": "jbeat-conventions",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Cross-language engineering conventions for scoped changes, project-rule conflict choices, clear writing, and honest verification.",
   "author": {
     "name": "jbeat",

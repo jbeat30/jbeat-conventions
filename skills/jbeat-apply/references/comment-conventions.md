@@ -1,55 +1,34 @@
 # Comment Conventions
 
-Write in Korean by default. See [language-conventions.md](language-conventions.md) for the full language policy.
+Use [writing-conventions.md](writing-conventions.md) for punctuation and
+[language-conventions.md](language-conventions.md) for language. Review/PR comments
+are prose covered by writing rules; the following concerns source code.
 
-Concise, consistent, focused on intent and constraints — not implementation details. Not a translation of the code.
+## Content and native syntax
 
-## Basic Style
+- Explain non-obvious reasons, policy, constraints, external contracts, side effects,
+  performance tradeoffs, and legacy fallbacks when names and types are insufficient.
+- Avoid restating code, speculative notes, stale status, and procedural narration.
+  Do not add comments merely to satisfy a count or template.
+- Update comments made inaccurate by the requested change.
+- Use native comment syntax and project documentation tools. Python docstrings,
+  Go comments, and Java documentation are not subject to JS syntax.
+- Under the Jbeat choice, short Korean source comments use concise noun endings
+  without a final period. Avoid `~입니다`, `~합니다`, `~하고 있습니다`, and redundant
+  narration. For example, use `서버 정책에 따른 재시도 횟수 제한`, not a sentence ending
+  in `제한합니다`. This is a style requirement for these comments, not a request to
+  add comments unnecessarily. Resolve conflicting project requirements before use.
+  Other languages, exact quotations, and multi-sentence documentation follow their
+  natural punctuation and applicable documentation conventions.
 
-- End with noun-style expressions: `담당`, `반환`, `수행`, `정의`, `검증`.
-- Avoid verbose sentences like `~을 담당하고 있습니다` or `~하는 로직입니다`.
-- Focus on **Why** (business rules) and **What** (core functionality), not How.
-- Do not end comments with a period.
+## Conditional JS/TS guidance
 
-## Comment Placement
+Apply only in JS/TS and when compatible with project tooling:
 
-| Position | Style | When to use |
-|----------|-------|-------------|
-| Exported function or class | `/** @description ...\n * @param ...\n * @returns ... */` | Public-facing functions and classes |
-| Interface or type field | trailing `//` | When field purpose is not obvious from the name |
-| Internal branch or block | `// WHY one-liner` | Policy rationale, non-obvious conditions |
-| Variable or constant | `const x = ...; // 보충 설명` | When name alone is insufficient |
-| Private internal helper | `//` or omit | Only when name does not convey enough |
-
-**JSDoc (`/** ... */`)** is for exported functions and classes only. Not for file headers or internal details.
-**Inline `//`** is for all in-body comments: branch rationale, variable clarification, block labels.
-**Do not mix styles**: `/** */` on a variable is wrong. `//` on an exported function header is wrong.
-
-## JSDoc Details
-
-- Document parameters, return values, side effects, and exceptions when they are important.
-- Use `@param`, `@returns`, `@throws`, `@example`, `@note`, `@description` to reduce understanding cost — not to increase tag count.
-- Do not write multi-line JSDoc for simple utilities where name and type signature are self-explanatory.
-
-## Inline Comment Details
-
-- Short explanations for variables, state values, constants, and simple branch intent use `//`, not `/** ... */`.
-- Add short trailing comments to important variables or constants when the name alone does not convey origin, unit, or policy (e.g., `const retryLimit = 3; // 서버 정책 기준`).
-- For complex branches, explain the reason and policy background behind the branch rather than merely restating the condition.
-
-## When Comments Are Needed
-
-- Policy-based branches or exception handling
-- External system constraints or data contracts
-- Reasons for performance optimization, bypass handling, or caching
-- Cases where intent is difficult to understand from naming alone
-- Complex state changes or side effects
-- Fallback logic for legacy data formats (e.g., `// 레거시 data.url 폴백`)
-
-## Avoid These Comments
-
-- Comments that restate the code
-- State descriptions that can easily become outdated
-- Personal impressions or speculative notes
-- Long procedural explanations that will drift from implementation
-- Explanations unlikely to be updated when implementation changes
+- Prefer JSDoc/TSDoc for public contracts needing explanation of parameters,
+  returns, exceptions, side effects, or examples. Do not require blocks for every
+  export or tags repeating an obvious type signature.
+- Use short `//` comments for non-obvious branch reasons or local context. Trailing
+  comments are useful only when the name is insufficient.
+- Tooling may require documentation on variables, internal APIs, or file headers.
+  Do not prohibit it solely because the symbol is not a public function.

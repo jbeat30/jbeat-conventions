@@ -25,6 +25,6 @@
 - Treat values as immutable unless reassignment is actually needed.
 - Avoid temporary names with weak meaning.
 - Group related declarations at the top of their scope when that improves scanability.
-- Add a short trailing `//` comment only when name alone does not explain origin, unit, or policy.
+- Add a short comment in the language's native syntax only when the name alone does not explain origin, unit, or policy. Follow [comment-conventions.md](comment-conventions.md).
 - Promote unclear literals, thresholds, keys, and policy values into named constants when doing so improves traceability.
 - Avoid excessive separation if the definition becomes too far from the usage site and makes tracing difficult.

@@ -1,45 +1,23 @@
 # Reporting Format
 
-Use Korean by default unless the user explicitly requests another language.
+Follow [language-conventions.md](language-conventions.md) and
+[writing-conventions.md](writing-conventions.md). Scale reports to the task;
+fixed headings and full checklists are not required for every response.
 
-## Final Report Order
+Include the outcome, meaningful changes, verification actually executed with its
+result, material unexecuted verification with reasons, and relevant remaining
+risks or unresolved choices. Separate executed and unexecuted checks clearly.
 
-1. Summary
-2. Key changes
-3. Quality and stability check
-4. Validation results
-5. Remaining risks or items that need confirmation
+Do not claim type checking, lint, tests, builds, tool calls, runtime behavior, or
+future compliance were verified unless evidence supports that exact claim. Source
+review differs from execution. A passing build does not establish UI behavior or
+every runtime path.
 
-## Quality and Stability Check Items
+A small edit can need only a short outcome and verification note. Reviews lead
+with actionable findings and evidence. Plans distinguish proposals from completed
+work. Do not add irrelevant frontend/runtime/order checklist items or imply every
+possible unrun check is a defect.
 
-- Type error possibility
-- Lint error possibility
-- Build error possibility
-- Runtime error possibility
-- Possibility of unintended side effects
-- Whether execution order changed
-- Whether initialization order changed
-- Whether dependency order changed
-- Whether rendering order changed
-- Whether event flow changed
-- Whether existing public behavior was preserved
-- Whether existing call contracts were preserved
-- Whether existing data flow was preserved
-- Whether existing user experience was preserved
-- Whether normal paths and failure paths were preserved
-
-## Validation Reporting Rules
-
-- Separate validations that were executed from validations that were not executed.
-- Do not claim that type checking, linting, testing, building, or runtime verification was performed unless it actually was.
-- If validation was not possible, state the reason explicitly.
-- Distinguish facts from assumptions.
-- List tool-based verification (context7, chrome-devtools) with its source: library and version, or URL and viewport.
-- Do not exaggerate validation results.
-- State remaining risks clearly without minimizing them.
-
-## Reporting Style
-
-- Prioritize actual changes and impact scope over theory.
-- Explain by file, module, or feature unit when that improves traceability.
-- Keep the report concise but explicit about what is verified and what is not.
+For external documentation, identify source and applicable version. For browser
+observations, record a safe URL, viewport, and checked behavior/value. Remove
+sensitive query strings or private data from reports.

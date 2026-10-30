@@ -1,145 +1,110 @@
 ---
 name: jbeat-setup
-classification: capability
-classification-reason: "Toggles automatic convention activation by flipping enabledPlugins in settings.json. Asks whether to apply globally (~/.claude/settings.json) or to the current project (.claude/settings.json). Run again to switch between auto mode on and off."
-deprecation-risk: none
-description: |
-  Toggles jbeat-conventions auto mode on or off.
-  Asks the user whether to apply to the current project or globally.
-  Each run flips enabledPlugins["jbeat-conventions@jbeat-plugins"] between true and false.
-  Creates settings.json if absent. Always ensures marketplace entry is present.
-  Triggers: jbeat setup, jbeat init, jbeat install, 초기 설정, 세팅, setup, 자동모드, 토글
-argument-hint: "(no argument needed)"
+description: >-
+  Connect the installed Jbeat conventions to this project's CLAUDE.md or AGENTS.md
+  so normal engineering requests use the apply skill. Run once per project, or
+  use status/remove to inspect or remove only the managed connection block.
+  Does not toggle plugin activation or edit global settings.
+disable-model-invocation: true
+argument-hint: "[status|remove]"
 user-invocable: true
-allowed-tools:
-  - Read
-  - Edit
-  - Write
-  - Bash
 ---
 
-# Jbeat Conventions — Setup (Toggle)
+# Connect Jbeat Conventions
 
-Toggles jbeat-conventions auto mode by flipping `enabledPlugins` in `settings.json`.
-Run again at any time to enable or disable.
+This is a prompt-driven setup skill. It has no bundled executable or hook.
+Invoking setup authorizes a narrow project-instruction connection, not replacement
+of local policies, global settings, plugin installation, or repository-wide cleanup.
 
----
+## Inspect before editing
 
-## Step 1 — Ask the user where to apply
+1. Respond in the user's language. Read the installed apply skill at
+   `../jbeat-apply/SKILL.md` and its language, writing, and project-rule-resolution
+   references, resolving paths from this skill's directory. Read
+   [project-instructions.md](references/project-instructions.md) as the connection template.
+2. Identify the current project root from the working context and repository.
+   Ask if ambiguous. Inspect supplied ancestor instructions and existing project
+   `CLAUDE.md`, `.claude/CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`, and
+   `.claude/AGENTS.md` where relevant. Do not inspect unrelated projects or home
+   settings. Check only current-scope guidance needed for choosing a loaded file.
+3. For a new or updated connection, verify that the installed
+   `jbeat-conventions:jbeat-apply` skill is available.
+   Source code in an arbitrary checkout is not proof of installation. If unavailable,
+   explain installation/reload steps and do not write a nonworking connection.
+4. Prefer an existing project CLAUDE.md that the host loads. If there is only an
+   AGENTS.md, use it when the host/version/settings load it. Do not assume both
+   filenames always load. If loading is uncertain or multiple destinations have
+   different scopes, explain and ask which loaded file to use. Do not create a
+   competing instruction file that hides an existing one.
+5. For a connection request, if neither file exists, ask whether to create
+   CLAUDE.md or AGENTS.md, explaining
+   Claude Code compatibility. For older or uncertain Claude Code environments,
+   recommend CLAUDE.md. Respect a destination the user already specified.
+   Global installation does not authorize editing global instructions; this setup
+   defaults to the current project only.
 
-Ask the user:
+For status/remove with no existing target, report that no connection exists;
+do not ask which file to create. Determine the requested action before inspecting
+destinations so read-only or removal requests never enter the creation flow.
 
-```
-어디에 적용할까요?
+## Select the action
 
-  1) 이 프로젝트에만 적용  (.claude/settings.json)
-  2) 전역으로 적용         (~/.claude/settings.json)
-```
+- No argument: add or update the connection in the selected instruction file.
+- `status`: inspect only. Report target, block presence, apply-skill availability,
+  and any uncertainty about instruction loading. Create or change nothing.
+- `remove`: remove only an intact Jbeat-managed block, preserving everything else.
+  If no block exists, report that fact without creating a file or deleting one.
+- Legacy `on`/`off`: explain that setup now connects project instructions, not
+  plugin activation. Direct activation management to `/plugin`. Do not silently
+  reinterpret these arguments or change any files. Ask which new action is wanted.
+- Unknown or contradictory actions: clarify before any write.
 
-Wait for the user's answer before continuing.
+For status/remove, missing apply-skill availability is a reportable condition,
+not a reason to prevent inspection or removal of an old connection.
 
-- User answers "1", "프로젝트", "project", or similar → set TARGET_PATH to `<current working directory>/.claude/settings.json`, go to Step 2
-- User answers "2", "전역", "global", or similar → set TARGET_PATH to `~/.claude/settings.json`, go to Step 2
+## Preview and apply narrowly
 
-To get the current working directory, run:
-```bash
-pwd
-```
+Use the template's exact start/end markers to identify ownership. Preserve its
+installed skill identifier and meaning; adapt prose to the instruction file's
+language. Reuse the existing document language rather than translating its other
+sections. Compare applicable local requirements before introducing any conflicting
+Jbeat summary, and resolve actual conflicts with the user first. Adapt selected
+summary rules to valid user choices rather than reintroducing an overridden rule.
+When resolving a setup conflict, include the selected topic, source, and path
+scope in the previewed managed block so the agreed connection is understandable
+in future sessions. Persist only choices authorized for this connection; do not
+silently turn a prior session-only choice into a permanent project policy.
 
----
+Show the target path and the proposed managed-block change before writing. A
+clear setup request already authorizes this narrow addition/update; do not ask
+for redundant approval once destination and any actual conflicts are resolved.
+Do not interpret an existing marker block as proof that its current text is safe
+to overwrite: preserve user customizations, and ask if replacing them is needed.
 
-## Step 2 — Ensure parent directory exists
+- Append one block when absent. On repeat runs, update the existing block in place
+  only if necessary. If already equivalent, leave the file unchanged.
+- If markers are duplicated, unbalanced, or ambiguously nested, explain the issue
+  and ask before editing. Never remove arbitrary text based on a guessed boundary.
+- Preserve all other instructions, file language, encoding, and line endings.
+  Do not replace the entire file, create duplicate sections, edit plugin caches,
+  or change enabledPlugins, marketplaces, permissions, hooks, or global settings.
+- Treat read/access failures as errors, not missing files. Re-read before writing
+  if concurrent changes are possible, and preserve them.
+- After writing, re-read to verify a single intact block (or its absence on remove)
+  and preservation of surrounding content. Do not delete the file when removing
+  its block, even if the block was its only content.
 
-If TARGET_PATH is the project-level path (`.claude/settings.json`), ensure the `.claude/` directory exists:
+## Report
 
-```bash
-mkdir -p "$(pwd)/.claude"
-```
+Report the changed path, action, and verified outcome in the user's language.
+After connecting, explain that future normal work requests are instructed to use
+Jbeat without a per-task command; a fresh session should load the connection.
+Distinguish verified file content from actual host loading and model compliance.
+Do not claim every task is guaranteed to obey the conventions.
 
----
-
-## Step 3 — Read settings.json
-
-Try to read the file at TARGET_PATH.
-
-- File does not exist → go to Step 4A
-- File exists → go to Step 4B
-
----
-
-## Step 4A — File does not exist: create it with auto mode ON
-
-Write to TARGET_PATH:
-
-```json
-{
-  "enabledPlugins": {
-    "jbeat-conventions@jbeat-plugins": true
-  },
-  "extraKnownMarketplaces": {
-    "jbeat-plugins": {
-      "source": {
-        "source": "github",
-        "repo": "jbeat30/jbeat-plugins"
-      }
-    }
-  }
-}
-```
-
-Then go to Step 5A (enabled).
-
----
-
-## Step 4B — File exists: toggle and ensure marketplace
-
-**Toggle `enabledPlugins["jbeat-conventions@jbeat-plugins"]`:**
-- Currently `true` → set to `false` → go to Step 5B (disabled)
-- Currently `false` → set to `true` → go to Step 5A (enabled)
-- Key absent → add as `true` → go to Step 5A (enabled)
-
-**Always ensure `extraKnownMarketplaces["jbeat-plugins"]` is present.** If missing, add it:
-```json
-"jbeat-plugins": {
-  "source": {
-    "source": "github",
-    "repo": "jbeat30/jbeat-plugins"
-  }
-}
-```
-
-If `extraKnownMarketplaces["jbeat-plugins"].source.repo` is `jbeat30/jbeat-conventions` (legacy location), replace it with `jbeat30/jbeat-plugins`.
-
-Preserve all existing keys.
-
----
-
-## Step 5A — Report: auto mode enabled
-
-Run:
-```bash
-printf '\033[32mSUCCESS!\033[0m\n'
-```
-
-Then output (include the actual path that was modified):
-
-```
-자동 모드가 활성화되었습니다.
-적용 위치: <TARGET_PATH>
-이제 jbeat-conventions가 자동으로 적용됩니다.
-
-수동으로 사용하려면:
-  /jbeat-apply  — 모든 컨벤션 파일 직접 로드
-```
-
----
-
-## Step 5B — Report: auto mode disabled
-
-Output (include the actual path that was modified):
-
-```
-자동 모드가 비활성화되었습니다.
-적용 위치: <TARGET_PATH>
-컨벤션을 사용하려면 /jbeat-apply 를 직접 실행하세요.
-```
+Removing the block stops this persistent connection, not plugin availability or
+all possible automatic skill selection. The apply skill can still be selected or
+invoked while the plugin is enabled. Already-loaded instructions remain in the
+current context; use a fresh session after removal. Changes to repository
+instruction files may be shared with collaborators if committed; do not commit
+or push unless the user requested it.

@@ -1,75 +1,222 @@
 # jbeat-conventions
 
-Jbeat 엔지니어링 컨벤션을 Claude Code 플러그인으로 패키징한 저장소입니다.
-구현, 리뷰, 리팩토링, 디버깅, 플래닝 전반에 걸쳐 일관된 컨벤션을 적용합니다.
+**AI가 요청 범위를 지키고, 기존 동작을 보존하며, 확인한 결과만 보고하도록 돕는 Claude Code용 개발 컨벤션 스킬 모음입니다.**
 
-## 다루는 범위
+설치 후 프로젝트에서 최초 설정을 한 번 진행하세요. 이후에는 평소처럼 작업을 요청하면 됩니다. 매번 적용 명령을 입력할 필요가 없습니다.
 
-- 변경 범위 제어 및 최소 안전 변경 원칙
-- 기존 동작과 계약 보존
-- 네이밍 및 주석 컨벤션
-- 회귀 위험 인식
-- 정직한 검증과 보고
+버그 하나를 고치려다 주변 구조까지 바뀌거나, 실행하지 않은 테스트가 통과했다고 보고되는 일을 줄이고 싶을 때 사용하세요. 프론트엔드 작업에서 출발했지만 언어와 프레임워크에 관계없이 쓸 수 있도록 공용 원칙과 조건부 지침을 구분했습니다.
 
-## 설치
+[빠른 시작](#빠른-시작) | [사용법](#사용법) | [컨벤션 가이드](CONVENTIONS.md) | [기여](#기여)
 
-```
+## 무엇이 좋아지나요?
+
+- 요청한 문제에 집중합니다. 무관한 이름 변경, 파일 이동, 의존성 교체를 억제합니다.
+- 요청한 변경 외의 동작과 계약을 보존하고 관련 정상 경로와 실패 경로를 살펴봅니다.
+- 프로젝트 규칙과 실제로 충돌하면 출처와 차이를 보여주고 사용자에게 선택을 묻습니다.
+- 코드 주석은 필요한 의도와 제약을 설명하고, 문서와 코멘트의 표현을 일관되게 유지합니다.
+- 사용자가 질문한 언어로 답하고, 기존 문서의 언어는 번역 요청 없이 바꾸지 않습니다.
+- 완료 전 변경 결과를 규칙과 대조하고 실제 검증과 중요한 미검증 범위를 구분합니다.
+
+규칙과 작업 절차는 Markdown 프롬프트로 제공합니다. 실행 스크립트, 훅, Node.js 의존성은 없습니다. 린터나 테스트를 대신하거나 AI의 준수를 100% 보장하는 도구는 아닙니다.
+
+## 빠른 시작
+
+이 문서의 최초 연결 방식은 **2.0.0 개발 버전 기준**입니다. 배포 여부는 [Releases](https://github.com/jbeat30/jbeat-conventions/releases)에서 확인하세요.
+
+### 1. 설치
+
+Claude Code 대화 입력창에서 마켓플레이스를 등록하고 플러그인을 설치합니다.
+
+```text
 /plugin marketplace add jbeat30/jbeat-plugins
 /plugin install jbeat-conventions@jbeat-plugins
 ```
 
-마켓플레이스 `jbeat-plugins`는 [jbeat30/jbeat-plugins](https://github.com/jbeat30/jbeat-plugins)에서 관리
+설치 범위는 개인 전체 사용이면 user, 저장소 구성원과 공유하려면 project, 현재 프로젝트에서 본인만 사용하려면 local을 선택합니다. 설치 후 안내에 따라 다시 로드하거나 재시작하세요.
 
-기존에 `jbeat30/jbeat-conventions`로 등록한 환경은 재등록 필요
+### 2. 프로젝트에 연결
 
+사용할 프로젝트에서 한 번 실행합니다.
+
+```text
+/jbeat-conventions:jbeat-setup
 ```
-/plugin marketplace remove jbeat-plugins
-/plugin marketplace add jbeat30/jbeat-plugins
+
+기존 `CLAUDE.md` 또는 로드되는 `AGENTS.md`에 짧은 Jbeat 연결 구역을 추가합니다. 파일이 없으면 어떤 파일을 만들지 먼저 묻고, 기존 내용은 보존합니다. 내부 규칙과 실제로 충돌하는 항목은 사용자가 선택합니다.
+
+설치 범위와 프로젝트 연결은 별개입니다. 전역으로 설치했어도 연결 설정은 사용할 프로젝트마다 진행합니다. 설정 스킬은 전역 설정이나 플러그인 활성화 값을 변경하지 않습니다. 추가할 경로와 내용을 보여주며, 재실행 시 같은 구역을 중복 추가하지 않습니다.
+
+| 현재 상태 | 사용 방식 |
+|---|---|
+| 설치만 완료 | 관련성에 따른 자동 선택이나 명시적 호출로 스킬 사용 |
+| 설치 후 프로젝트 연결 완료 | 기본 지침이 관련 작업에서 스킬을 사용하도록 안내, 평소처럼 요청 |
+
+평소 작업에 지속적으로 사용하려면 프로젝트 연결까지 진행하세요. 추가되는 내용은 [연결 구역 템플릿](skills/jbeat-setup/references/project-instructions.md)에서 미리 확인할 수 있습니다.
+
+### 3. 평소처럼 요청
+
+연결 후 새 대화 세션에서 바로 요청하세요.
+
+```text
+로그인 오류를 수정해줘. 관련 실패 경로도 확인해줘.
 ```
 
-## 업데이트
-
-```bash
-claude plugins update jbeat-conventions@jbeat-plugins
+```text
+이 변경사항을 리뷰해줘.
 ```
+
+프로젝트 기본 지침이 관련 작업에서 설치된 적용 스킬을 사용하도록 안내합니다. `/jbeat-conventions:jbeat-apply`를 매번 입력할 필요는 없습니다. MCP도 필수가 아닙니다.
+
+## 사용법
+
+### 기본 사용과 적용 범위
+
+구현, 디버깅, 리뷰, 리팩토링, 개발 계획, 프로젝트 문서, 주석, 커밋과 PR 작성에서 필요한 참조를 읽습니다. 무관한 일반 대화에 개발 절차를 요구하지 않으며, 브라우저 검사나 JS/TS 문서화 방식을 다른 개발 환경에 강제하지 않습니다.
+
+예를 들어 Jbeat 기준의 짧은 한국어 코드 주석은 `~입니다`, `~합니다` 대신 `서버 정책에 따른 재시도 횟수 제한` 같은 명사형을 사용합니다. 구현 중 부수적으로 추가한 주석도 적용 대상입니다. 내부 규칙과 충돌하면 선택을 먼저 받습니다.
+
+### 요청하면 무엇이 달라지나요?
+
+아래는 컨벤션이 안내하는 기대 행동입니다. 실제 결과는 변경 내용과 검증 근거로 확인합니다.
+
+| 요청이나 상황 | 기대 행동 |
+|---|---|
+| 버그 수정 | 필요한 코드와 관련 경로에 집중하고 무관한 구조 변경 제외 |
+| 구현 중 주석 작성 | 필요한 이유와 제약 설명, 짧은 한국어 주석은 선택한 기준에 따라 명사형 사용 |
+| 문서, 리뷰 코멘트, 커밋과 PR 작성 | 구분용 미드닷과 불필요한 대시 회피, 필수 문법과 원문 보존 |
+| 영어로 질문 | 영어 응답, 기존 파일 언어는 별도로 보존 |
+| 내부 규칙과 충돌 | 영향을 받는 변경 전에 선택 요청, 무관하거나 양립 가능한 규칙에는 질문 없음 |
+| 검증을 실행하지 못함 | 미실행 이유와 중요한 미검증 범위 명시, 통과로 보고하지 않음 |
+
+### 내부 규칙이 있다면
+
+현재 작업에 적용되는 지침 파일, 기여 가이드, 경로별 규칙, 템플릿과 관련 도구 설정을 먼저 확인합니다. 같은 주제와 경로에 대한 기존 선택이 유효하면 재사용하고 나머지 항목을 비교합니다.
+
+| 관계 | 동작 |
+|---|---|
+| 서로 무관한 규칙 | 각각 적용 |
+| 내용이 같거나 함께 지킬 수 있는 규칙 | 질문 없이 함께 적용 |
+| 동시에 지킬 수 없는 규칙 | 출처와 차이를 설명하고 사용자 선택 대기 |
+
+선택지는 내부 규칙, Jbeat 규칙, 항목별 선택입니다. 해당 프로젝트와 세션에서 같은 항목을 반복해서 묻지 않으며, 새 충돌이나 관련 규칙의 중요한 변경만 다시 확인합니다. 규칙을 선택했다고 무관한 파일이나 도구 설정을 자동 변경하지 않습니다. 상위 지침과 강제된 권한 제한은 선택으로 해제할 수 없습니다.
+
+### 연결 상태 확인과 해제
+
+```text
+/jbeat-conventions:jbeat-setup status
+```
+
+대상 지침 파일과 연결 구역을 확인하며 파일을 변경하지 않습니다. 연결을 제거하려면 다음 명령을 사용합니다.
+
+```text
+/jbeat-conventions:jbeat-setup remove
+```
+
+Jbeat 연결 구역만 제거하고 기존 지침은 보존합니다. 플러그인을 삭제하거나 비활성화하는 명령은 아닙니다. 연결을 제거해도 설치된 스킬은 관련성에 따라 자동 선택되거나 명시적으로 호출될 수 있습니다. 이미 읽은 지침은 현재 대화에 남으므로 새 세션에서 확인하세요.
+
+프로젝트 지침 파일은 커밋하면 협업자에게도 공유됩니다. setup은 커밋이나 푸시를 자동 수행하지 않습니다.
+
+### 선택 사항: 명시적 적용
+
+연결 없이 특정 작업에만 사용하거나 적용 스킬을 직접 호출하고 싶으면 다음처럼 요청할 수 있습니다.
+
+```text
+/jbeat-conventions:jbeat-apply 이 변경사항을 리뷰해줘.
+```
+
+전체 참조를 읽히려면 `all`을 전달합니다. 모두 읽어도 조건부 규칙의 적용 범위는 유지됩니다.
+
+```text
+/jbeat-conventions:jbeat-apply all
+```
+
+### 지침이 로드되지 않는다면
+
+Claude Code가 해당 파일을 읽는지 `/memory`에서 확인하세요. `AGENTS.md` 직접 로드는 지원 버전과 Project instructions 설정에 따라 달라지며, 기본적으로 프로젝트 경로에 `CLAUDE.md` 등이 있으면 그것을 읽습니다. 두 파일을 항상 함께 읽는다고 가정하지 않습니다. 자세한 조건은 [공식 지침 안내](https://code.claude.com/docs/en/memory#agentsmd)를 확인하세요.
+
+연결은 스킬을 사용하라는 지속 지침입니다. 설치된 모든 스킬 본문이 세션 시작부터 전부 로드되는 것은 아닙니다. 스킬을 사용할 수 없으면 그 사실을 알리고, 규칙을 읽거나 검증했다고 주장하지 않도록 지시합니다. 결과는 프로젝트의 테스트와 리뷰로 확인하세요.
+
+현재 구조의 정적 검토와 실제 동작 확인 여부는 [검증 범위](docs/behavior-validation.md#현재-검증-범위)에 구분해 기록합니다.
+
+### 어떤 개발 환경에 쓸 수 있나요?
+
+| 공용으로 적용 | 해당 작업에서만 적용 |
+|---|---|
+| 범위 통제, 계약 보존, 추상화 판단, 정직한 검증 | 프로젝트에 실제로 있는 테스트, 타입 검사, 빌드 도구 |
+| 의도 중심 주석, 문서 표현, 언어 정책 | JS/TS의 JSDoc/TSDoc 등 언어별 문서화 방식 |
+| 설치 버전에 맞춘 서드파티 확인 | 브라우저 UI 검증, UI 메시지, JS console 예시 |
+
+Python, Java, Go 등에서도 각 언어 문법과 프로젝트 도구를 따릅니다. 현재 패키지는 Claude Code용이며, 다른 에이전트의 설치 방식과 스킬 이름은 해당 환경에 맞춰 별도로 연결해야 합니다.
 
 ## 명령어
 
+플러그인에는 두 스킬이 있습니다. `jbeat-setup`은 사용자가 최초 연결을 요청할 때 실행하는 설정 스킬이고, `jbeat-apply`는 관련 작업에서 사용하는 컨벤션 스킬입니다.
+
+| 명령어 | 용도 |
+|---|---|
+| `/jbeat-conventions:jbeat-setup` | 프로젝트 지침에 연결, 최초 한 번 실행 |
+| `/jbeat-conventions:jbeat-setup status` | 연결 상태 확인, 변경 없음 |
+| `/jbeat-conventions:jbeat-setup remove` | 관리되는 연결 구역만 제거 |
+| `/jbeat-conventions:jbeat-apply` | 선택 사항, 현재 작업의 적용 스킬 직접 호출 |
+| `/jbeat-conventions:jbeat-apply all` | 선택 사항, 전체 참조 읽기 |
+
+일반 작업 요청에는 명령이 필요하지 않습니다. 짧은 `/jbeat-setup`, `/jbeat-apply` 표시와 사용 가능 여부는 현재 명령 메뉴에서 확인하세요.
+
+1.2.0의 setup은 플러그인 활성화 토글이었지만, 2.0.0에서는 프로젝트 지침 연결로 변경했습니다. 이전 `on/off` 인자는 설정을 변경하지 않고 전환 방법을 안내합니다. 플러그인 활성화와 비활성화는 `/plugin`에서 관리하세요. 예전 설정값은 자동 삭제하지 않으며, 업데이트했다면 재시작 후 프로젝트 연결을 한 번 진행합니다.
+
+## 업데이트
+
+터미널에서 실행한 뒤 Claude Code를 재시작합니다.
+
+```bash
+claude plugin update jbeat-conventions@jbeat-plugins
 ```
-/jbeat-setup   # 자동 모드 — 컨벤션 자동 활성화 on/off 토글
-/jbeat-apply   # 수동 모드 — 모든 컨벤션을 명시적으로 즉시 적용
-```
+
+`/plugin`의 Installed 화면에서도 업데이트할 수 있습니다. 연결 구역은 버전별 캐시 경로를 저장하지 않고 설치된 스킬 이름을 참조합니다. 연결 템플릿을 갱신하려면 setup을 다시 실행하세요. 사용자 수정이 있으면 임의로 덮어쓰지 않습니다.
+
+배포 버전은 [Releases](https://github.com/jbeat30/jbeat-conventions/releases)에서 확인합니다. 마켓플레이스 구주소를 사용한다면 [설치와 설정 가이드](CONVENTIONS.md#설치와-설정)를 참고하세요.
 
 ## 컨벤션 가이드
 
-상세 내용은 [CONVENTIONS.md](CONVENTIONS.md)를 참고하세요.
+[상세 가이드](CONVENTIONS.md)는 적용 흐름과 사례를 설명합니다. 실제 규칙의 기준은 아래 참조 문서입니다.
 
-| 파일 | 내용 |
-|------|------|
-| `references/core-rules.md` | 개발 철학, 변경 원칙, 에러 처리, 구조 |
-| `references/naming-conventions.md` | 변수, 상수, 모듈 네이밍 규칙 |
-| `references/comment-conventions.md` | 주석 작성 기준과 스타일 |
-| `references/language-conventions.md` | 언어 정책 (기본 한국어) |
-| `references/quality-checklist.md` | 작업 전 확인 사항과 최종 자가 점검 |
-| `references/reporting-format.md` | 결과 보고서 및 검증 요약 형식 |
-| `references/tooling-verification.md` | context7(최신 문서), chrome-devtools(화면 검증) 사용 규칙 |
-| `references/commit-conventions.md` | 커밋·PR 제목 형식, 문자 규칙, 본문 구성, AI 첨부 문구 금지 |
+| 주제 | 요약과 상세 문서 |
+|---|---|
+| 코어 | [범위 통제, 계약 보존, 구조와 오류 처리](skills/jbeat-apply/references/core-rules.md) |
+| 내부 규칙 | [충돌 판단, 사용자 선택과 유지 범위](skills/jbeat-apply/references/project-rule-resolution.md) |
+| 네이밍 | [역할, 단위, 외부 필드 보존](skills/jbeat-apply/references/naming-conventions.md) |
+| 공용 글쓰기 | [구분용 미드닷 금지, 불필요한 대시 제한과 예외](skills/jbeat-apply/references/writing-conventions.md) |
+| 코드 주석 | [필요한 이유와 제약 설명, 언어별 조건](skills/jbeat-apply/references/comment-conventions.md) |
+| 언어 | [사용자 언어 응답, 기존 산출물 언어 보존](skills/jbeat-apply/references/language-conventions.md) |
+| 품질 | [작업별 점검과 비례하는 검증](skills/jbeat-apply/references/quality-checklist.md) |
+| 보고 | [실행 결과와 중요한 미검증 항목 구분](skills/jbeat-apply/references/reporting-format.md) |
+| 서드파티와 도구 | [버전 확인, 공식 근거, 조건부 브라우저 검증](skills/jbeat-apply/references/tooling-verification.md) |
+| 커밋과 PR | [제목, 본문, 의미 있는 변경 단위](skills/jbeat-apply/references/commit-conventions.md) |
 
-## 선택 사항: MCP 도구
+## 선택 사항: MCP
 
-`tooling-verification.md`는 아래 MCP가 설치된 경우에만 적용되며, 이 플러그인은 MCP를 설치하거나 설정하지 않습니다.
-도구가 없으면 공식 문서 등으로 대체하고, 확인하지 못한 항목은 미검증으로 보고합니다.
+MCP 없이 시작할 수 있습니다. 다음은 필요한 기능이 있고 설치되어 있을 때 사용하는 예시이며, 플러그인이 설치하거나 설정하지 않습니다.
+
+| 도구 예시 | 사용 시점 | 대체 방법 |
+|---|---|---|
+| Context7 | 서드파티 API와 설정의 문서 확인 | 공식 문서, 설치 패키지의 타입과 소스 |
+| chrome-devtools | 브라우저 UI와 상호작용 확인 | 사용 가능한 다른 브라우저 검사 도구 |
+
+필요한 도구만 직접 설치할 수 있습니다.
 
 ```bash
 claude mcp add context7 -- npx -y @upstash/context7-mcp
 claude mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest
 ```
 
-- context7은 외부 서비스이므로 쿼리에 시크릿이나 내부 코드를 넣지 않습니다.
-- chrome-devtools는 localhost, 개발·스테이징 환경에서만 사용하며 개인 로그인 프로필은 사용하지 않습니다.
+위 선택 설치 명령은 Node.js와 npx를 사용하는 도구의 예시이며 컨벤션 스킬 자체의 요구사항은 아닙니다. 외부 쿼리에 시크릿이나 내부 코드를 보내지 않고 승인된 환경에서 검사합니다. 다른 방법으로 확인했다면 MCP 부재만으로 미검증이라고 보고하지 않습니다.
 
-## 버전·브랜치 관리
+## 기여
 
-- 버전은 [Semantic Versioning](https://semver.org/lang/ko/)을 따르며 태그는 `vX.Y.Z` 입니다. 릴리즈는 [Releases](https://github.com/jbeat30/jbeat-conventions/releases)에서 확인합니다.
-- `main` 에는 `release/vX.Y.Z`, `hotfix/vX.Y.Z` 만 PR 할 수 있고, 작업은 `feature/vX.Y.Z` 로 PR 합니다.
-- 상세 흐름(작업·릴리즈·핫픽스·백머지)은 [.github/BRANCH_STRATEGY.md](.github/BRANCH_STRATEGY.md)를 참고하세요.
+놓친 충돌, 불필요한 질문, 컨벤션 누락 사례를 재현 요청과 기대 행동으로 공유해 주세요. 변경 시 관련 문서와 [행동 검증 시나리오](docs/behavior-validation.md)를 함께 검토합니다.
+
+작업과 PR은 [기여 및 릴리즈 가이드](.github/BRANCH_STRATEGY.md)를 따릅니다. 이번 변경은 setup의 기존 사용법을 바꾸므로 MAJOR 버전인 2.0.0을 대상으로 합니다. 작업 브랜치의 PR 대상은 `feature/v2.0.0`이며, 이후 같은 버전의 릴리즈 브랜치를 거쳐 배포합니다.
+
+## 라이선스와 참고
+
+[MIT License](LICENSE). Claude Code 동작은 [공식 플러그인 안내](https://code.claude.com/docs/en/discover-plugins), [공식 스킬 안내](https://code.claude.com/docs/en/skills), [프로젝트 지침 안내](https://code.claude.com/docs/en/memory)를 참고하세요.
